@@ -2746,28 +2746,3 @@ function checkAutoLogin() {
 checkAutoLogin();
 updateSubjectOptions();
 updateSubjectCards();
-
-/* Светлая / тёмная тема */
-(function(){
-  const themeButton = document.getElementById("themeToggle");
-  if (!themeButton) return;
-
-  const savedTheme = localStorage.getItem("eduLevelTheme");
-  if (savedTheme === "dark") {
-    document.body.classList.add("dark-theme");
-  }
-
-  function updateThemeButton(){
-    const dark = document.body.classList.contains("dark-theme");
-    themeButton.textContent = dark ? "☀️ Светлая тема" : "🌙 Тёмная тема";
-    themeButton.setAttribute("aria-label", dark ? "Переключить на светлую тему" : "Переключить на тёмную тему");
-  }
-
-  updateThemeButton();
-
-  themeButton.addEventListener("click", function(){
-    const dark = document.body.classList.toggle("dark-theme");
-    localStorage.setItem("eduLevelTheme", dark ? "dark" : "light");
-    updateThemeButton();
-  });
-})();
