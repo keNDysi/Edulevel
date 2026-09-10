@@ -141,16 +141,12 @@
 
         <h2>ЗАДАНИЯ НА СЕГОДНЯ</h2>
 
-        <div class="cards">
+        <div class="cards" id="subjectCards">
+        </div>
 
-            <div class="card">
-                <span>МАТЕМАТИКА</span>
-                <h3>Решить задачи</h3>
-                <p>Выполни задания по математике.</p>
-                <button onclick="goToLearning('МАТЕМАТИКА')">
-                    Перейти
-                </button>
-            </div>
+        <p id="noSubjectsMessage" class="no-subjects-message" style="display:none;">
+            Для выбранного класса предметы пока не добавлены.
+        </p>
 
             <div class="card">
                 <span>РУССКИЙ ЯЗЫК</span>
@@ -260,18 +256,7 @@
 
             <label for="subjectSelect">Предмет</label>
 
-            <select id="subjectSelect">
-
-                <option value="МАТЕМАТИКА">Математика</option>
-                <option value="РУССКИЙ ЯЗЫК">Русский язык</option>
-                <option value="АНГЛИЙСКИЙ ЯЗЫК">Английский язык</option>
-                <option value="ФИЗИКА">Физика</option>
-                <option value="ХИМИЯ">Химия</option>
-                <option value="БИОЛОГИЯ">Биология</option>
-                <option value="ИСТОРИЯ">История</option>
-                <option value="ГЕОГРАФИЯ">География</option>
-
-            </select>
+            <select id="subjectSelect"></select>
 
 
             <label for="topicSelect">Тема</label>
