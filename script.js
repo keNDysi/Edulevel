@@ -24,9 +24,18 @@ const defaultSubjects = {
     "ГЕОГРАФИЯ":       { xp: 0, level: 0 }
 };
 
+function cloneDefaultSubjects() {
+    const result = {};
+    Object.keys(defaultSubjects).forEach(function (subject) {
+        result[subject] = { totalXp: 0, xp: 0, level: 0 };
+    });
+    return result;
+}
+
 let xp = defaultXp;
 let level = defaultLevel;
-let subjects = Object.assign({}, defaultSubjects);
+let totalXp = defaultXp;
+let subjects = cloneDefaultSubjects();
 
 // ---------- ЗАГРУЗКА / СОХРАНЕНИЕ ----------
 
@@ -35,22 +44,49 @@ function loadUserData() {
     if (saved) {
         try {
             const data = JSON.parse(saved);
-            xp       = data.xp    !== undefined ? data.xp    : defaultXp;
-            level    = data.level !== undefined ? data.level : defaultLevel;
+            // Новый формат: уровень всегда вычисляется из накопленного XP.
+            // Старые сохранения автоматически мигрируются.
+            if (data.totalXp !== undefined) {
+                totalXp = Math.max(0, Number(data.totalXp) || 0);
+            } else {
+                const oldXp = Math.max(0, Number(data.xp) || 0);
+                const oldLevel = Math.max(0, Number(data.level) || 0);
+                totalXp = oldLevel * maxXp + oldXp;
+            }
+
+            xp = totalXp % maxXp;
+            level = Math.floor(totalXp / maxXp);
+
             subjects = data.subjects
-                ? Object.assign({}, defaultSubjects, data.subjects)
-                : Object.assign({}, defaultSubjects);
+                ? Object.assign({}, cloneDefaultSubjects(), data.subjects)
+                : cloneDefaultSubjects();
+
+            Object.keys(defaultSubjects).forEach(function (subject) {
+                const savedSubject = subjects[subject] || {};
+                const subjectTotalXp = savedSubject.totalXp !== undefined
+                    ? Math.max(0, Number(savedSubject.totalXp) || 0)
+                    : Math.max(0, Number(savedSubject.level) || 0) * subjectMaxXp
+                      + Math.max(0, Number(savedSubject.xp) || 0);
+
+                subjects[subject] = {
+                    totalXp: subjectTotalXp,
+                    xp: subjectTotalXp % subjectMaxXp,
+                    level: Math.floor(subjectTotalXp / subjectMaxXp)
+                };
+            });
             completedTasks = new Set(Array.isArray(data.completedTasks) ? data.completedTasks : []);
         } catch (e) {
             xp = defaultXp;
             level = defaultLevel;
-            subjects = Object.assign({}, defaultSubjects);
+            totalXp = defaultXp;
+            subjects = cloneDefaultSubjects();
             completedTasks = new Set();
         }
     } else {
         xp = defaultXp;
         level = defaultLevel;
-        subjects = Object.assign({}, defaultSubjects);
+        totalXp = defaultXp;
+        subjects = cloneDefaultSubjects();
         completedTasks = new Set();
     }
     updateProgress();
@@ -61,8 +97,7 @@ function saveUserData() {
     localStorage.setItem(
         "eduLevelData_v2_" + userKey,
         JSON.stringify({
-            xp: xp,
-            level: level,
+            totalXp: totalXp,
             subjects: subjects,
             completedTasks: Array.from(completedTasks)
         })
@@ -508,24 +543,29 @@ checkAnswerButton.addEventListener("click", function () {
             return;
         }
 
-        // Общий XP.
-        xp += gainXp;
+        // Общий XP. Уровень теперь НЕ хранится как независимое число —
+        // он всегда вычисляется из накопленного XP.
+        const oldLevel = level;
+        totalXp += gainXp;
+        level = Math.floor(totalXp / maxXp);
+        xp = totalXp % maxXp;
 
-        // Каждый полный 1000 XP = новый общий уровень.
-        while (xp >= maxXp) {
-            xp -= maxXp;
-            level++;
+        if (level > oldLevel) {
             alert("Новый уровень! Теперь ты " + level + " уровня!");
         }
 
         // XP конкретного предмета.
         if (subjects[subject]) {
-            subjects[subject].xp += gainXp;
+            const oldSubjectLevel = subjects[subject].level || 0;
 
-            // Каждый полный 100 XP = новый уровень предмета.
-            while (subjects[subject].xp >= subjectMaxXp) {
-                subjects[subject].xp -= subjectMaxXp;
-                subjects[subject].level++;
+            subjects[subject].totalXp =
+                (Number(subjects[subject].totalXp) || 0) + gainXp;
+            subjects[subject].level =
+                Math.floor(subjects[subject].totalXp / subjectMaxXp);
+            subjects[subject].xp =
+                subjects[subject].totalXp % subjectMaxXp;
+
+            if (subjects[subject].level > oldSubjectLevel) {
                 alert(subject + " прокачан до Lv. " + subjects[subject].level + "!");
             }
         }
