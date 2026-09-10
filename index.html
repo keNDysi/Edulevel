@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduLevel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <div class="logo">EDULEVEL</div>
+
+    <nav>
+        <a href="#home">Главная</a>
+        <a href="#tasks">Задания</a>
+        <a href="#subjects">Предметы</a>
+        <a href="#learning">Обучение</a>
+        <a href="#progress">Прогресс</a>
+    </nav>
+
+    <!-- ПАНЕЛЬ АККАУНТА СПРАВА ВВЕРХУ -->
+    <div class="account-wrapper">
+        <button id="accountButton" class="account-button">
+            <span id="accountButtonText">Войти</span>
+        </button>
+
+        <div id="accountPanel" class="account-panel">
+            <!-- ФОРМЫ ВХОДА / РЕГИСТРАЦИИ -->
+            <div id="authForms">
+                <div class="auth-tabs">
+                    <button type="button" id="showLogin" class="active">Вход</button>
+                    <button type="button" id="showRegister">Регистрация</button>
+                </div>
+
+                <!-- ВХОД -->
+                <form id="loginForm">
+                    <input type="text" id="loginName" placeholder="Имя пользователя"
+                           autocomplete="username" required>
+                    <input type="password" id="loginPassword" placeholder="Пароль"
+                           autocomplete="current-password" required>
+
+                    <label class="remember-row">
+                        <input type="checkbox" id="rememberLogin" checked>
+                        Запомнить меня
+                    </label>
+
+                    <button type="submit">Войти</button>
+                </form>
+
+                <!-- РЕГИСТРАЦИЯ -->
+                <form id="registerForm" style="display: none;">
+                    <input type="text" id="registerName" placeholder="Имя пользователя"
+                           autocomplete="username" required>
+                    <input type="password" id="registerPassword"
+                           placeholder="Пароль (минимум 4 символа)"
+                           autocomplete="new-password" required>
+
+                    <label class="remember-row">
+                        <input type="checkbox" id="rememberRegister" checked>
+                        Запомнить меня
+                    </label>
+
+                    <button type="submit">Зарегистрироваться</button>
+                </form>
+
+                <p id="authMessage"></p>
+
+                <button type="button" id="continueGuest" class="guest-button">
+                    Продолжить без регистрации
+                </button>
+            </div>
+
+            <!-- ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ -->
+            <div id="userProfile" style="display: none;">
+                <p class="user-greeting">Привет, <strong id="userName"></strong>!</p>
+                <p class="user-hint">Прогресс сохраняется автоматически.</p>
+                <button type="button" id="logoutButton">Выйти</button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+
+    <!-- ГЛАВНАЯ -->
+    <section id="home" class="hero">
+        <h1>ПРОКАЧАЙ СВОИ ЗНАНИЯ</h1>
+        <p>Учись. Выполняй. Повышай уровень.</p>
+    </section>
+
+
+    <!-- КЛАСС -->
+    <section class="class-selection">
+        <h2>МОЙ КЛАСС</h2>
+
+        <select id="classSelect">
+            <option value="5">5 класс</option>
+            <option value="6">6 класс</option>
+            <option value="7">7 класс</option>
+            <option value="8">8 класс</option>
+            <option value="9">9 класс</option>
+            <option value="10">10 класс</option>
+            <option value="11">11 класс</option>
+        </select>
+    </section>
+
+
+    <!-- ПРОФИЛЬ -->
+    <section class="profile">
+
+        <div class="profile-info">
+
+            <h2>ТВОЙ ПРОГРЕСС</h2>
+
+            <div class="level">
+                <strong id="levelNumber">7</strong>
+                <span>УРОВЕНЬ</span>
+            </div>
+
+            <p id="xpText">720 / 1000 XP</p>
+
+            <div class="progress-bar">
+                <div id="generalProgress" class="progress-fill"></div>
+            </div>
+
+        </div>
+
+        <div class="streak">
+            <span>🔥</span>
+            <strong>5 дней</strong>
+            <small>Серия обучения</small>
+        </div>
+
+    </section>
+
+
+    <!-- ЗАДАНИЯ -->
+    <section id="tasks">
+
+        <h2>ЗАДАНИЯ НА СЕГОДНЯ</h2>
+
+        <div class="cards">
+
+            <div class="card">
+                <span>МАТЕМАТИКА</span>
+                <h3>Решить задачи</h3>
+                <p>Выполни задания по математике.</p>
+                <button onclick="goToLearning('МАТЕМАТИКА')">
+                    Перейти
+                </button>
+            </div>
+
+            <div class="card">
+                <span>РУССКИЙ ЯЗЫК</span>
+                <h3>Повторить правила</h3>
+                <p>Проверь свои знания русского языка.</p>
+                <button onclick="goToLearning('РУССКИЙ ЯЗЫК')">
+                    Перейти
+                </button>
+            </div>
+
+            <div class="card">
+                <span>АНГЛИЙСКИЙ ЯЗЫК</span>
+                <h3>Повторить слова</h3>
+                <p>Проверь свой словарный запас.</p>
+                <button onclick="goToLearning('АНГЛИЙСКИЙ ЯЗЫК')">
+                    Перейти
+                </button>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ПРЕДМЕТЫ -->
+    <section id="subjects">
+
+        <h2>ПРЕДМЕТЫ</h2>
+
+        <div class="cards">
+
+            <div class="card subject-card">
+                <span>МАТЕМАТИКА</span>
+                <h3>Lv. 8</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+
+            <div class="card subject-card">
+                <span>РУССКИЙ ЯЗЫК</span>
+                <h3>Lv. 6</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+
+            <div class="card subject-card">
+                <span>АНГЛИЙСКИЙ ЯЗЫК</span>
+                <h3>Lv. 7</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+
+            <div class="card subject-card">
+                <span>ФИЗИКА</span>
+                <h3>Lv. 5</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+
+            <div class="card subject-card">
+                <span>ХИМИЯ</span>
+                <h3>Lv. 4</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+
+            <div class="card subject-card">
+                <span>БИОЛОГИЯ</span>
+                <h3>Lv. 6</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+
+            <div class="card subject-card">
+                <span>ИСТОРИЯ</span>
+                <h3>Lv. 5</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+
+            <div class="card subject-card">
+                <span>ГЕОГРАФИЯ</span>
+                <h3>Lv. 3</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ОБУЧЕНИЕ -->
+    <section id="learning">
+
+        <h2>ОБУЧЕНИЕ</h2>
+
+        <div class="learning-panel">
+
+            <label for="subjectSelect">Предмет</label>
+
+            <select id="subjectSelect">
+
+                <option value="МАТЕМАТИКА">Математика</option>
+                <option value="РУССКИЙ ЯЗЫК">Русский язык</option>
+                <option value="АНГЛИЙСКИЙ ЯЗЫК">Английский язык</option>
+                <option value="ФИЗИКА">Физика</option>
+                <option value="ХИМИЯ">Химия</option>
+                <option value="БИОЛОГИЯ">Биология</option>
+                <option value="ИСТОРИЯ">История</option>
+                <option value="ГЕОГРАФИЯ">География</option>
+
+            </select>
+
+
+            <label for="topicSelect">Тема</label>
+
+            <select id="topicSelect"></select>
+
+
+            <div class="task-preview">
+
+                <span id="selectedSubject">МАТЕМАТИКА</span>
+
+                <h3 id="selectedTopic">Выберите тему</h3>
+
+                <p id="taskDescription">
+                    После выбора темы нажмите «Начать задание».
+                </p>
+
+
+                <div id="taskArea">
+
+                    <textarea
+                        id="answerInput"
+                        placeholder="Введите свой ответ..."
+                        rows="4">
+                    </textarea>
+
+                    <button id="checkAnswer">
+                        Проверить ответ
+                    </button>
+
+                    <p id="answerResult"></p>
+
+                </div>
+
+
+                <button id="startTask">
+                    Начать задание
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ПРОГРЕСС -->
+    <section id="progress">
+
+        <h2>ПРОГРЕСС</h2>
+
+        <div class="progress-card">
+
+            <h3>Общий уровень</h3>
+
+            <p id="progressInfo">
+                Продолжай выполнять задания и получай XP.
+            </p>
+
+            <div class="progress-bar">
+                <div id="progressBig" class="progress-fill"></div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ДОСТИЖЕНИЯ -->
+    <section id="achievements">
+
+        <h2>ДОСТИЖЕНИЯ</h2>
+
+        <div class="cards">
+
+            <div class="card">
+                <span>🏆 ДОСТИЖЕНИЕ</span>
+                <h3>Первый шаг</h3>
+                <p>Выполни своё первое задание.</p>
+            </div>
+
+            <div class="card">
+                <span>🔥 ДОСТИЖЕНИЕ</span>
+                <h3>Серия</h3>
+                <p>Учись несколько дней подряд.</p>
+            </div>
+
+            <div class="card">
+                <span>⭐ ДОСТИЖЕНИЕ</span>
+                <h3>1000 XP</h3>
+                <p>Набери 1000 XP.</p>
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+    EduLevel — учись. Выполняй. Повышай уровень.
+</footer>
+
+
+<script src="tasks-5class.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>

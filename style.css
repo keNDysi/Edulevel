@@ -1,0 +1,538 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #858585;
+    color: #ffffff;
+}
+
+header {
+    background: #292929;
+    padding: 20px 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    gap: 20px;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+nav {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-left: auto;
+    margin-right: 20px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 15px;
+}
+
+nav a:hover {
+    color: #cccccc;
+}
+
+.account-wrapper {
+    position: relative;
+}
+
+.account-button {
+    background: #444444;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: 0.2s;
+    white-space: nowrap;
+}
+
+.account-button:hover {
+    background: #555555;
+}
+
+.account-button.logged-in {
+    background: #4a7a4a;
+}
+
+.account-button.logged-in:hover {
+    background: #5a8a5a;
+}
+
+.account-panel {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 320px;
+    background: #333333;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    z-index: 200;
+}
+
+.account-panel.open {
+    display: block;
+}
+
+.auth-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.auth-tabs button {
+    flex: 1;
+    background: #4a4a4a;
+    color: white;
+    border: none;
+    padding: 9px 12px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: 0.2s;
+}
+
+.auth-tabs button.active {
+    background: #292929;
+}
+
+.auth-tabs button:hover {
+    background: #555555;
+}
+
+#authForms form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#authForms input[type="text"],
+#authForms input[type="password"] {
+    padding: 10px 12px;
+    border: none;
+    border-radius: 7px;
+    background: #eeeeee;
+    color: #222222;
+    font-size: 14px;
+}
+
+#authForms input[type="text"]:focus,
+#authForms input[type="password"]:focus {
+    outline: 2px solid #777777;
+}
+
+.remember-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #dddddd;
+    font-size: 13px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.remember-row input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+}
+
+#authForms button[type="submit"] {
+    background: #292929;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+    margin-top: 4px;
+}
+
+#authForms button[type="submit"]:hover {
+    background: #444444;
+}
+
+#authMessage {
+    margin-top: 12px;
+    font-size: 13px;
+    font-weight: bold;
+    min-height: 18px;
+    color: #ffd97a;
+}
+
+.guest-button {
+    display: block;
+    width: 100%;
+    margin-top: 14px;
+    background: transparent;
+    color: #cccccc;
+    border: 1px dashed #666666;
+    padding: 10px 16px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: 0.2s;
+}
+
+.guest-button:hover {
+    background: #3d3d3d;
+    color: #ffffff;
+    border-color: #888888;
+}
+
+#userProfile {
+    text-align: center;
+}
+
+.user-greeting {
+    font-size: 16px;
+    margin-bottom: 6px;
+}
+
+.user-greeting strong {
+    color: #8fd68f;
+}
+
+.user-hint {
+    font-size: 12px;
+    color: #aaaaaa;
+    margin-bottom: 14px;
+}
+
+#userProfile button {
+    background: #292929;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+#userProfile button:hover {
+    background: #444444;
+}
+
+main {
+    width: 84%;
+    max-width: 1200px;
+    margin: auto;
+}
+
+section {
+    padding: 70px 0;
+}
+
+section h2 {
+    margin-bottom: 30px;
+    font-size: 28px;
+}
+
+.hero {
+    text-align: center;
+    padding: 100px 20px;
+}
+
+.hero h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 20px;
+    color: #dddddd;
+}
+
+.class-selection {
+    padding-top: 20px;
+}
+
+#classSelect {
+    background: #707070;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.profile {
+    background: #999999;
+    border-radius: 15px;
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+}
+
+.profile-info {
+    width: 70%;
+}
+
+.level {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.level strong {
+    font-size: 40px;
+}
+
+.profile-info p {
+    margin-bottom: 10px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 14px;
+    background: #666666;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #eeeeee;
+    border-radius: 20px;
+    transition: width 0.4s ease;
+}
+
+.streak {
+    background: #707070;
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    min-width: 150px;
+}
+
+.streak span {
+    font-size: 30px;
+}
+
+.streak strong {
+    display: block;
+    font-size: 22px;
+    margin: 8px 0;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.card {
+    background: #999999;
+    padding: 25px;
+    border-radius: 12px;
+    transition: 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    background: #a3a3a3;
+}
+
+.card span {
+    font-size: 12px;
+    font-weight: bold;
+    color: #dddddd;
+}
+
+.card h3 {
+    margin: 12px 0;
+    font-size: 20px;
+}
+
+.card p {
+    color: #eeeeee;
+    margin-bottom: 15px;
+}
+
+button {
+    border: none;
+    background: #292929;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+button:hover {
+    background: #444444;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.subject-card h3 {
+    font-size: 24px;
+}
+
+.subject-card .progress-bar {
+    margin-top: 15px;
+}
+
+.learning-panel {
+    background: #999999;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 700px;
+}
+
+.learning-panel label {
+    display: block;
+    margin-bottom: 8px;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+.learning-panel label:first-child {
+    margin-top: 0;
+}
+
+.learning-panel select {
+    width: 100%;
+    padding: 12px;
+    background: #707070;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    font-size: 16px;
+}
+
+.task-preview {
+    margin-top: 30px;
+    padding: 25px;
+    background: #707070;
+    border-radius: 10px;
+}
+
+.task-preview span {
+    font-size: 12px;
+    font-weight: bold;
+    color: #dddddd;
+}
+
+.task-preview h3 {
+    margin: 10px 0;
+    font-size: 22px;
+}
+
+.task-preview p {
+    margin-bottom: 20px;
+    color: #eeeeee;
+}
+
+#taskArea {
+    display: none;
+    margin-top: 20px;
+}
+
+#answerInput {
+    width: 100%;
+    resize: vertical;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: none;
+    border-radius: 7px;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+}
+
+#answerResult {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.progress-card {
+    background: #999999;
+    padding: 30px;
+    border-radius: 12px;
+}
+
+.progress-card h3 {
+    margin-bottom: 10px;
+}
+
+.progress-card .progress-bar {
+    margin-top: 20px;
+}
+
+footer {
+    background: #292929;
+    text-align: center;
+    padding: 30px;
+    color: #cccccc;
+}
+
+@media (max-width: 900px) {
+    header {
+        flex-wrap: wrap;
+        padding: 15px 5%;
+    }
+
+    nav {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        margin: 0;
+    }
+
+    .account-panel {
+        width: 280px;
+        right: -10px;
+    }
+
+    .hero h1 {
+        font-size: 34px;
+    }
+
+    .profile {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .profile-info {
+        width: 100%;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    section {
+        padding: 50px 0;
+    }
+}
