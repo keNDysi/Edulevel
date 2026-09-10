@@ -10,18 +10,18 @@ let userKey = "guest";
 const maxXp = 1000;
 const subjectMaxXp = 100;
 
-const defaultXp = 720;
-const defaultLevel = 7;
+const defaultXp = 0;
+const defaultLevel = 0;
 
 const defaultSubjects = {
-    "МАТЕМАТИКА":      { xp: 80, level: 8 },
-    "РУССКИЙ ЯЗЫК":    { xp: 60, level: 6 },
-    "АНГЛИЙСКИЙ ЯЗЫК": { xp: 70, level: 7 },
-    "ФИЗИКА":          { xp: 50, level: 5 },
-    "ХИМИЯ":           { xp: 40, level: 4 },
-    "БИОЛОГИЯ":        { xp: 60, level: 6 },
-    "ИСТОРИЯ":         { xp: 50, level: 5 },
-    "ГЕОГРАФИЯ":       { xp: 30, level: 3 }
+    "МАТЕМАТИКА":      { xp: 0, level: 0 },
+    "РУССКИЙ ЯЗЫК":    { xp: 0, level: 0 },
+    "АНГЛИЙСКИЙ ЯЗЫК": { xp: 0, level: 0 },
+    "ФИЗИКА":          { xp: 0, level: 0 },
+    "ХИМИЯ":           { xp: 0, level: 0 },
+    "БИОЛОГИЯ":        { xp: 0, level: 0 },
+    "ИСТОРИЯ":         { xp: 0, level: 0 },
+    "ГЕОГРАФИЯ":       { xp: 0, level: 0 }
 };
 
 let xp = defaultXp;
@@ -31,7 +31,7 @@ let subjects = Object.assign({}, defaultSubjects);
 // ---------- ЗАГРУЗКА / СОХРАНЕНИЕ ----------
 
 function loadUserData() {
-    const saved = localStorage.getItem("eduLevelData_" + userKey);
+    const saved = localStorage.getItem("eduLevelData_v2_" + userKey);
     if (saved) {
         try {
             const data = JSON.parse(saved);
@@ -40,15 +40,18 @@ function loadUserData() {
             subjects = data.subjects
                 ? Object.assign({}, defaultSubjects, data.subjects)
                 : Object.assign({}, defaultSubjects);
+            completedTasks = new Set(Array.isArray(data.completedTasks) ? data.completedTasks : []);
         } catch (e) {
             xp = defaultXp;
             level = defaultLevel;
             subjects = Object.assign({}, defaultSubjects);
+            completedTasks = new Set();
         }
     } else {
         xp = defaultXp;
         level = defaultLevel;
         subjects = Object.assign({}, defaultSubjects);
+        completedTasks = new Set();
     }
     updateProgress();
     updateSubjects();
@@ -56,8 +59,13 @@ function loadUserData() {
 
 function saveUserData() {
     localStorage.setItem(
-        "eduLevelData_" + userKey,
-        JSON.stringify({ xp: xp, level: level, subjects: subjects })
+        "eduLevelData_v2_" + userKey,
+        JSON.stringify({
+            xp: xp,
+            level: level,
+            subjects: subjects,
+            completedTasks: Array.from(completedTasks)
+        })
     );
 }
 
@@ -76,6 +84,7 @@ const checkAnswerButton= document.querySelector("#checkAnswer");
 const answerResult     = document.querySelector("#answerResult");
 
 let currentTask = null;
+let completedTasks = new Set();
 
 // ---------- КЛАСС ----------
 
@@ -453,7 +462,19 @@ startTaskButton.addEventListener("click", function () {
         return;
     }
 
-    currentTask = taskList[Math.floor(Math.random() * taskList.length)];
+    const taskCandidates = taskList.filter(function (task) {
+        const taskId = studentClass + "|" + subject + "|" + topic + "|" + task.question;
+        return !completedTasks.has(taskId);
+    });
+
+    if (taskCandidates.length === 0) {
+        taskDescription.textContent = "В этой теме ты уже выполнил все доступные задания.";
+        taskArea.style.display = "none";
+        startTaskButton.style.display = "inline-block";
+        return;
+    }
+
+    currentTask = taskCandidates[Math.floor(Math.random() * taskCandidates.length)];
 
     taskDescription.innerHTML =
         "<strong>" + currentTask.difficulty + "</strong><br><br>" + currentTask.question;
@@ -474,26 +495,42 @@ checkAnswerButton.addEventListener("click", function () {
 
     if (userAnswer === expected) {
 
-        const gainXp = currentTask.xp || 20;
+        const gainXp = Number(currentTask.xp) || 0;
+        const subject = subjectSelect.value;
+        const studentClass = classSelect.value;
+        const topic = topicSelect.value;
+        const taskId = studentClass + "|" + subject + "|" + topic + "|" + currentTask.question;
 
+        // За одно и то же задание XP можно получить только один раз.
+        if (completedTasks.has(taskId)) {
+            answerResult.textContent = "Это задание уже засчитано.";
+            checkAnswerButton.disabled = true;
+            return;
+        }
+
+        // Общий XP.
         xp += gainXp;
 
-        if (xp >= maxXp) {
-            level++;
+        // Каждый полный 1000 XP = новый общий уровень.
+        while (xp >= maxXp) {
             xp -= maxXp;
+            level++;
             alert("Новый уровень! Теперь ты " + level + " уровня!");
         }
 
-        const subject = subjectSelect.value;
-
+        // XP конкретного предмета.
         if (subjects[subject]) {
             subjects[subject].xp += gainXp;
-            if (subjects[subject].xp >= subjectMaxXp) {
-                subjects[subject].level++;
+
+            // Каждый полный 100 XP = новый уровень предмета.
+            while (subjects[subject].xp >= subjectMaxXp) {
                 subjects[subject].xp -= subjectMaxXp;
+                subjects[subject].level++;
                 alert(subject + " прокачан до Lv. " + subjects[subject].level + "!");
             }
         }
+
+        completedTasks.add(taskId);
 
         saveUserData();
         updateProgress();
