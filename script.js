@@ -2434,6 +2434,86 @@ function updateTopics() {
     updateTaskPreview();
 }
 
+
+// ---------- АВТОМАТИЧЕСКИЕ ЗАДАНИЯ ИЗ ТЕМ УЧЕБНИКА ----------
+function normalizeAnswer(value) {
+    return String(value || "")
+        .toLowerCase()
+        .replace(/[«»“”„”]/g, '"')
+        .replace(/[’`]/g, "'")
+        .replace(/[—–−]/g, "-")
+        .replace(/\s+/g, " ")
+        .trim()
+        .replace(/[.!?,;:]+$/g, "");
+}
+
+function textbookSectionForBelMova(topic) {
+    const t = topic.toLowerCase();
+    if (/^тэкст|прыметы тэксту|план тэксту/.test(t)) return "Тэкст";
+    if (/(мова|маўленне|стылі маўлення|пераказ)/.test(t)) return "Маўленне";
+    if (/(словазлучэнне|сказ|члены сказа|зваротк|складаныя|простая мова|дыялог|пунктуац)/.test(t)) return "Сінтаксіс і пунктуацыя";
+    if (/(гукі|літара|склад|націск|галосн|зычн|алфавіт|перанос|апостраф|правапіс у, ў)/.test(t)) return "Фанетыка і арфаэпія. Графіка і арфаграфія";
+    if (/(лексіч|словы|сінонім|антонім|амонім|фразеалагізм|неалагізм|запазычан)/.test(t)) return "Лексіка. Фразеалогія";
+    if (/(назоўнік|прыметнік|займеннік|дзеяслоў|часціны мовы)/.test(t)) return "Марфалогія";
+    if (/(склад слова|словаўтвар)/.test(t)) return "Склад слова. Словаўтварэнне";
+    return "Беларуская мова";
+}
+
+function buildTextbookTasks(subject, topic) {
+    if (!topic) return [];
+    const tasks = [];
+    const authorPart = topic.includes(".") ? topic.split(".")[0].trim() : "";
+
+    if (subject === "БЕЛАРУСКАЯ ЛІТАРАТУРА") {
+        tasks.push({
+            difficulty: "Легко", xp: 15,
+            answer: topic,
+            question: "Як называецца тэма/твор, які пазначаны ў падручніку? Увядзі назву: «" + topic + "»."
+        });
+        tasks.push({
+            difficulty: "Средне", xp: 25,
+            answer: authorPart || topic,
+            question: authorPart
+                ? "Хто пазначаны аўтарам у назве гэтай тэмы? Увядзі: «" + authorPart + "»."
+                : "Увядзі назву тэмы дакладна так, як яна пададзена ў падручніку."
+        });
+        return tasks;
+    }
+
+    if (subject === "БЕЛАРУСКАЯ МОВА") {
+        const section = textbookSectionForBelMova(topic);
+        tasks.push({
+            difficulty: "Легко", xp: 15,
+            answer: topic,
+            question: "Як называецца гэтая тэма ў падручніку? Увядзі: «" + topic + "»."
+        });
+        tasks.push({
+            difficulty: "Средне", xp: 25,
+            answer: section,
+            question: "Да якога раздзела падручніка адносіцца тэма «" + topic + "»? Увядзі назву раздзела."
+        });
+        return tasks;
+    }
+
+    if (subject === "РУССКИЙ ЯЗЫК") {
+        tasks.push({ difficulty: "Легко", xp: 15, answer: topic, question: "Как называется выбранная тема в учебнике? Введите название темы." });
+        tasks.push({ difficulty: "Средне", xp: 25, answer: topic, question: "Повторите название темы точно так, как оно указано в списке учебника." });
+        return tasks;
+    }
+
+    if (subject === "АНГЛИЙСКИЙ ЯЗЫК") {
+        const unit = (topic.match(/^Unit\s+\d+/i) || [""])[0];
+        tasks.push({ difficulty: "Легко", xp: 15, answer: topic, question: "Как называется выбранный урок? Введите его название точно по учебнику." });
+        tasks.push({ difficulty: "Средне", xp: 25, answer: unit || topic, question: unit ? "К какому юниту относится этот урок? Введите, например: Unit 1." : "Введите название урока точно по учебнику." });
+        return tasks;
+    }
+
+    // Универсальный резерв: тема всегда существует в учебной программе.
+    tasks.push({ difficulty: "Легко", xp: 15, answer: topic, question: "Как называется выбранная тема? Введите название точно из списка тем." });
+    tasks.push({ difficulty: "Средне", xp: 25, answer: topic, question: "Повторите название выбранной темы по учебнику." });
+    return tasks;
+}
+
 function updateTaskPreview() {
     selectedSubject.textContent = subjectSelect.value;
     selectedTopic.textContent   = topicSelect.value;
@@ -2463,6 +2543,13 @@ startTaskButton.addEventListener("click", function () {
         taskList = tasks5Class[topic];
     } else if (tasks[subject] && tasks[subject][topic]) {
         taskList = tasks[subject][topic];
+    }
+
+    // Если в массиве нет готовых заданий, строим простые задания прямо из
+    // темы учебника. Это особенно важно для белорусской мовы/літаратуры:
+    // тема и автор берутся из списка тем, составленного по учебникам.
+    if (!taskList || taskList.length === 0) {
+        taskList = buildTextbookTasks(subject, topic);
     }
 
     if (!taskList || taskList.length === 0) {
@@ -2500,10 +2587,15 @@ startTaskButton.addEventListener("click", function () {
 checkAnswerButton.addEventListener("click", function () {
     if (!currentTask) return;
 
-    const userAnswer = answerInput.value.trim().toLowerCase().replace(/\s+/g, " ");
-    const expected   = String(currentTask.answer).trim().toLowerCase().replace(/\s+/g, " ");
+    const userAnswer = normalizeAnswer(answerInput.value);
+    const accepted = Array.isArray(currentTask.acceptedAnswers)
+        ? currentTask.acceptedAnswers
+        : [currentTask.answer];
+    const isCorrect = accepted.some(function (answer) {
+        return normalizeAnswer(answer) === userAnswer;
+    });
 
-    if (userAnswer === expected) {
+    if (isCorrect) {
 
         const gainXp = Number(currentTask.xp) || 0;
         const subject = subjectSelect.value;
@@ -2746,3 +2838,28 @@ function checkAutoLogin() {
 checkAutoLogin();
 updateSubjectOptions();
 updateSubjectCards();
+
+/* Светлая / тёмная тема */
+(function(){
+  const themeButton = document.getElementById("themeToggle");
+  if (!themeButton) return;
+
+  const savedTheme = localStorage.getItem("eduLevelTheme");
+  if (savedTheme === "gray" || savedTheme === "dark") {
+    document.body.classList.add("dark-theme");
+  }
+
+  function updateThemeButton(){
+    const dark = document.body.classList.contains("dark-theme");
+    themeButton.textContent = dark ? "☀️ Светлая тема" : "⚫ Серая тема";
+    themeButton.setAttribute("aria-label", dark ? "Переключить на светлую тему" : "Переключить на тёмную тему");
+  }
+
+  updateThemeButton();
+
+  themeButton.addEventListener("click", function(){
+    const dark = document.body.classList.toggle("dark-theme");
+    localStorage.setItem("eduLevelTheme", dark ? "gray" : "light");
+    updateThemeButton();
+  });
+})();
