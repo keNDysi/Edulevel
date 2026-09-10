@@ -102,12 +102,74 @@ footer{
   border-top:1px solid #e5e9f0;color:#68758a
 }
 @media(max-width:800px){
-  header{position:relative;flex-wrap:wrap;gap:14px}
-  nav{order:3;width:100%;gap:12px}
-  .account-wrapper{margin-left:auto}
+  header{
+    position:relative;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:10px 12px;
+    padding:12px 14px 14px;
+  }
+  .logo{
+    width:100%;
+    font-size:21px;
+    line-height:1.1;
+  }
+  .account-wrapper{
+    order:2;
+    width:100%;
+    margin-left:0;
+    flex-direction:row;
+    align-items:center;
+    justify-content:flex-end;
+    gap:8px;
+  }
+  .account-button,.theme-toggle{
+    flex:0 0 auto;
+    white-space:nowrap;
+  }
+  nav{
+    order:3;
+    width:100%;
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:7px;
+    padding-top:3px;
+  }
+  nav a{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:36px;
+    padding:7px 4px;
+    border:1px solid #e1e5eb;
+    border-radius:9px;
+    font-size:13px;
+    text-align:center;
+  }
   .task-panel{grid-template-columns:1fr}
   .profile{flex-direction:column}
   .streak{min-width:0}
+}
+
+@media(max-width:520px){
+  header{
+    padding:13px 12px 15px;
+    gap:9px;
+  }
+  nav{
+    grid-template-columns:repeat(3,1fr);
+    gap:6px;
+    margin-top:2px;
+  }
+  nav a{
+    min-height:34px;
+    font-size:12px;
+    padding:6px 2px;
+  }
+  .account-button{padding:9px 13px}
+  .theme-toggle{padding:7px 10px;font-size:12px}
+  .account-panel{right:0;width:min(300px,calc(100vw - 24px))}
 }
 @media(max-width:520px){
   main{padding:0 14px 35px}
@@ -170,6 +232,3 @@ body.dark-theme .streak{background:#666c74;color:#fff}
 body.dark-theme .progress-bar{background:#747a82}
 body.dark-theme #taskArea{border-top-color:#747b84}
 body.dark-theme .no-subjects-message{background:#686e55;color:#fff}
-@media(max-width:800px){
-  .account-wrapper{margin-left:auto}
-}
