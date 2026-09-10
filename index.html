@@ -138,112 +138,38 @@
 
     <!-- ЗАДАНИЯ -->
     <section id="tasks">
-
         <h2>ЗАДАНИЯ НА СЕГОДНЯ</h2>
+        <div class="task-panel">
+            <div class="task-selection">
+                <label for="subjectSelect">Предмет</label>
+                <select id="subjectSelect"></select>
 
-        <div class="cards" id="subjectCards">
+                <label for="topicSelect">Тема</label>
+                <select id="topicSelect"></select>
+
+                <button id="startTaskButton" type="button">Начать задание</button>
+            </div>
+            <div class="task-info">
+                <p><strong>Предмет:</strong> <span id="selectedSubject">—</span></p>
+                <p><strong>Тема:</strong> <span id="selectedTopic">—</span></p>
+                <p id="taskDescription">Выбери класс, предмет и тему.</p>
+                <div id="taskArea" style="display:none;">
+                    <input id="answerInput" type="text" placeholder="Твой ответ">
+                    <button id="checkAnswer" type="button">Проверить</button>
+                    <p id="answerResult"></p>
+                </div>
+            </div>
         </div>
-
         <p id="noSubjectsMessage" class="no-subjects-message" style="display:none;">
             Для выбранного класса предметы пока не добавлены.
         </p>
-
-            <div class="card">
-                <span>РУССКИЙ ЯЗЫК</span>
-                <h3>Повторить правила</h3>
-                <p>Проверь свои знания русского языка.</p>
-                <button onclick="goToLearning('РУССКИЙ ЯЗЫК')">
-                    Перейти
-                </button>
-            </div>
-
-            <div class="card">
-                <span>АНГЛИЙСКИЙ ЯЗЫК</span>
-                <h3>Повторить слова</h3>
-                <p>Проверь свой словарный запас.</p>
-                <button onclick="goToLearning('АНГЛИЙСКИЙ ЯЗЫК')">
-                    Перейти
-                </button>
-            </div>
-
-        </div>
-
     </section>
 
 
     <!-- ПРЕДМЕТЫ -->
     <section id="subjects">
-
         <h2>ПРЕДМЕТЫ</h2>
-
-        <div class="cards">
-
-            <div class="card subject-card">
-                <span>МАТЕМАТИКА</span>
-                <h3>Lv. 0</h3>
-                <div class="progress-bar">
-                    <div class="progress-fill"></div>
-                </div>
-            </div>
-
-            <div class="card subject-card">
-                <span>РУССКИЙ ЯЗЫК</span>
-                <h3>Lv. 0</h3>
-                <div class="progress-bar">
-                    <div class="progress-fill"></div>
-                </div>
-            </div>
-
-            <div class="card subject-card">
-                <span>АНГЛИЙСКИЙ ЯЗЫК</span>
-                <h3>Lv. 0</h3>
-                <div class="progress-bar">
-                    <div class="progress-fill"></div>
-                </div>
-            </div>
-
-            <div class="card subject-card">
-                <span>ФИЗИКА</span>
-                <h3>Lv. 0</h3>
-                <div class="progress-bar">
-                    <div class="progress-fill"></div>
-                </div>
-            </div>
-
-            <div class="card subject-card">
-                <span>ХИМИЯ</span>
-                <h3>Lv. 0</h3>
-                <div class="progress-bar">
-                    <div class="progress-fill"></div>
-                </div>
-            </div>
-
-            <div class="card subject-card">
-                <span>БИОЛОГИЯ</span>
-                <h3>Lv. 0</h3>
-                <div class="progress-bar">
-                    <div class="progress-fill"></div>
-                </div>
-            </div>
-
-            <div class="card subject-card">
-                <span>ИСТОРИЯ</span>
-                <h3>Lv. 0</h3>
-                <div class="progress-bar">
-                    <div class="progress-fill"></div>
-                </div>
-            </div>
-
-            <div class="card subject-card">
-                <span>ГЕОГРАФИЯ</span>
-                <h3>Lv. 0</h3>
-                <div class="progress-bar">
-                    <div class="progress-fill"></div>
-                </div>
-            </div>
-
-        </div>
-
+        <div class="cards" id="subjectCards"></div>
     </section>
 
 

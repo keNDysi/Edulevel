@@ -2358,7 +2358,7 @@ function updateSubjectCards() {
         card.className = "card subject-card";
 
         const span = document.createElement("span");
-        span.textContent = subject;
+        span.textContent = subjectLabels[subject] || subject;
 
         const h3 = document.createElement("h3");
         h3.textContent = "Lv. 0";
